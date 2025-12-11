@@ -17,7 +17,7 @@
 #import <substrate.h>
 #import <libhooker/libhooker.h>
 #import <rootless.h>
-#define LIBUNDIRECT_PATH ("@rpath/libundirect.dylib")
+#define LIBUNDIRECT_PATH ("@loader_path/libundirect.dylib")
 
 #ifdef __cplusplus
 extern "C" {
