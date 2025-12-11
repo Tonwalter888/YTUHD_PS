@@ -1,10 +1,9 @@
 #import <CoreMedia/CoreMedia.h>
-#import <Foundation/NSProcessInfo.h>
-#import <Foundation/NSString.h>
+#import <Foundation/Foundation.h>
 #import <HBLog.h>
 #import <substrate.h>
 #ifdef SIDELOAD
-#import <libundirect/libundirect_dynamic.h>
+#import "libundirect_dynamic.h"
 #else
 #import <libundirect/libundirect.h>
 #endif
@@ -27,17 +26,8 @@ extern "C" {
     BOOL RowThreading();
 }
 
-// Remove any <= 1080p VP9 formats if AllVP9 is disabled
 NSArray <MLFormat *> *filteredFormats(NSArray <MLFormat *> *formats) {
-    if (AllVP9()) return formats;
-    NSPredicate *predicate = [NSPredicate predicateWithBlock:^BOOL(MLFormat *format, NSDictionary *bindings) {
-        if (![format isKindOfClass:%c(MLFormat)]) return YES;
-        NSString *qualityLabel = [format qualityLabel];
-        BOOL isHighRes = [qualityLabel hasPrefix:@"2160p"] || [qualityLabel hasPrefix:@"1440p"];
-        BOOL isVP9orAV1 = [[format MIMEType] videoCodec] == 'vp09' || [[format MIMEType] videoCodec] == 'av01';
-        return (isHighRes && isVP9orAV1) || !isVP9orAV1;
-    }];
-    return [formats filteredArrayUsingPredicate:predicate];
+    return formats;
 }
 
 static void hookFormatsBase(YTIHamplayerConfig *config) {
